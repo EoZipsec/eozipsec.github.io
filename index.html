@@ -7,277 +7,375 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;700&display=swap');
         
+        :root {
+            --neon-green: #00ff41;
+            --darker-green: #003b11;
+            --bg-black: #050505;
+        }
+
         body {
             font-family: 'Fira+Code', monospace;
-            background-color: #0a0a0a;
-            color: #00ff41;
+            background-color: var(--bg-black);
+            color: var(--neon-green);
+            scroll-behavior: smooth;
+        }
+
+        /* Efecto CRT de monitor antiguo */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 100;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
         }
 
         .terminal-glow {
-            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
         }
 
-        .card-bg {
-            background: rgba(20, 20, 20, 0.8);
-            border: 1px solid #1a1a1a;
-            transition: all 0.3s ease;
+        .card-cyber {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid var(--darker-green);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .card-bg:hover {
-            border-color: #00ff41;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
-            transform: translateY(-5px);
+        .card-cyber:hover {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            transform: scale(1.02);
+        }
+
+        .card-cyber::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.05), transparent);
+            transition: 0.5s;
+        }
+
+        .card-cyber:hover::after {
+            left: 100%;
         }
 
         .scanline {
             width: 100%;
-            height: 2px;
-            z-index: 10;
-            background: rgba(0, 255, 65, 0.1);
-            position: absolute;
-            animation: scanline 6s linear infinite;
+            height: 100px;
+            z-index: 99;
+            background: linear-gradient(0deg, transparent 0%, rgba(0, 255, 65, 0.05) 50%, transparent 100%);
+            position: fixed;
+            animation: scan 8s linear infinite;
             pointer-events: none;
         }
 
-        @keyframes scanline {
-            0% { top: 0; }
+        @keyframes scan {
+            0% { top: -100px; }
             100% { top: 100%; }
         }
 
-        .cursor {
-            display: inline-block;
-            width: 10px;
-            height: 20px;
-            background: #00ff41;
-            animation: blink 1s step-end infinite;
-            vertical-align: middle;
+        .btn-cyber {
+            position: relative;
+            border: 1px solid var(--neon-green);
+            background: transparent;
+            color: var(--neon-green);
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .btn-cyber:hover {
+            background: var(--neon-green);
+            color: black;
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--neon-green);
+            color: black;
+            padding: 10px 25px;
+            border-radius: 2px;
+            font-weight: bold;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+        }
+
+        .badge-grid img {
+            filter: grayscale(1) brightness(0.8);
+            transition: all 0.3s;
+        }
+
+        .badge-grid div:hover img {
+            filter: grayscale(0) brightness(1.2);
+            transform: scale(1.1);
+        }
+
+        .typing {
+            border-right: 2px solid var(--neon-green);
+            white-space: nowrap;
+            overflow: hidden;
+            animation: typing 3s steps(30, end), blink 0.8s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
         }
 
         @keyframes blink {
-            50% { opacity: 0; }
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0a0a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #00ff41;
-        }
-        
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #00ff41;
-            color: black;
-            padding: 10px 20px;
-            border-radius: 4px;
-            font-weight: bold;
-            display: none;
-            z-index: 100;
-            box-shadow: 0 0 15px rgba(0,255,65,0.4);
+            from, to { border-color: transparent }
+            50% { border-color: var(--neon-green) }
         }
     </style>
 </head>
-<body class="relative overflow-x-hidden">
+<body class="relative">
     <div class="scanline"></div>
-    <div id="toast" class="toast">Copiado al portapapeles</div>
+    <div id="toast">SYSTEM: DATA_COPIED_TO_CLIPBOARD</div>
 
-    <!-- Navegación -->
-    <nav class="p-6 border-b border-green-900/30 bg-black/50 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <span class="text-xl font-bold terminal-glow">> EOZ_IPSEC_</span>
-            <div class="space-x-6 hidden md:block text-sm">
-                <a href="#about" class="hover:text-white transition">./sobre_mi</a>
-                <a href="#skills" class="hover:text-white transition">./arsenal</a>
-                <a href="#projects" class="hover:text-white transition">./repositorios</a>
-                <a href="#badges" class="hover:text-white transition">./certificaciones</a>
+    <!-- Barra de navegación con estilo de barra de estado -->
+    <nav class="p-4 border-b border-green-900 bg-black/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex justify-between items-center text-[12px]">
+            <div class="flex items-center gap-4">
+                <span class="font-bold terminal-glow">EOZ@IPSEC:~#</span>
+                <span class="hidden sm:inline text-green-800">Uptime: 99.9%</span>
+            </div>
+            <div class="flex gap-4">
+                <a href="#about" class="hover:text-white transition">[01] Sobre_mí</a>
+                <a href="#exp" class="hover:text-white transition">[02] Experiencia</a>
+                <a href="#projects" class="hover:text-white transition">[03] Proyectos</a>
+                <a href="#badges" class="hover:text-white transition">[04] Certs</a>
             </div>
         </div>
     </nav>
 
-    <!-- Sección Hero -->
-    <header id="about" class="py-20 px-6 max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-        <div>
-            <div class="text-xs mb-4 text-green-900 font-bold uppercase tracking-widest">[ Status: Active ]</div>
-            <h1 class="text-4xl md:text-6xl font-bold mb-4 terminal-glow">
-                Juan Pablo <br>
-                <span class="text-white">Pedroche</span>
+    <!-- Header / Hero -->
+    <header id="about" class="pt-24 pb-16 px-6 max-w-6xl mx-auto grid md:grid-cols-12 gap-12 items-center">
+        <div class="md:col-span-7">
+            <div class="inline-block px-2 py-1 bg-green-950 text-[10px] font-bold mb-6 border border-green-500/30">
+                AUDITOR_DE_SEGURIDAD_WEB_v2.5
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 terminal-glow leading-tight">
+                JUAN PABLO<br>
+                <span class="text-white">PEDROCHE</span>
             </h1>
-            <p class="text-green-700 mb-8 leading-relaxed max-w-lg">
-                Security Researcher y Desarrollador. Especializado en **Pentesting Web** y **Seguridad Electrónica**. 
-                Enfocado en la automatización de auditorías ofensivas mediante Python y Go.
-                <span class="cursor"></span>
-            </p>
+            <div class="max-w-md">
+                <p class="text-green-500 mb-8 leading-relaxed">
+                    > Especialista en <span class="text-white">Pentesting Web</span> y <span class="text-white">Seguridad Electrónica</span>. <br>
+                    > Enfocado en la automatización de auditorías y desarrollo de exploits personalizados con Python y Go.
+                </p>
+            </div>
+            
             <div class="flex flex-wrap gap-4">
-                <!-- Botón Email con Copiar -->
-                <button onclick="copyToClipboard('eoz.ipsec@gmail.com', 'Email')" class="bg-green-600 text-black px-6 py-3 font-bold rounded hover:bg-green-400 transition flex items-center gap-2">
-                    <i class="fa-solid fa-envelope"></i> Email( )
+                <button onclick="copyToClipboard('eoz.ipsec@gmail.com', 'Email')" class="btn-cyber px-8 py-3 font-bold text-sm uppercase flex items-center gap-2">
+                    <i class="fa-solid fa-code-branch"></i> Iniciar_Contacto
                 </button>
-                
-                <!-- Botón WhatsApp/Teléfono con Copiar -->
-                <button onclick="copyToClipboard('+5492267664081', 'Teléfono')" class="border border-green-600 px-6 py-3 rounded hover:bg-green-600/10 transition flex items-center gap-2">
-                    <i class="fa-solid fa-phone"></i> +54 9 2267 664081
-                </button>
-
-                <a href="https://github.com/EoZipsec" target="_blank" class="border border-green-600 px-6 py-3 rounded hover:bg-green-600/10 transition flex items-center gap-2">
-                    <i class="fa-brands fa-github"></i> Perfil_GitHub
+                <a href="https://github.com/EoZipsec" target="_blank" class="border border-green-900 px-8 py-3 text-sm hover:border-green-500 transition flex items-center gap-2">
+                    <i class="fa-brands fa-github"></i> REPOSITORIO
                 </a>
             </div>
         </div>
-        <div class="flex justify-center relative">
-            <div class="w-64 h-64 md:w-80 md:h-80 border-2 border-green-500 rounded-lg p-2 relative overflow-hidden group">
-                <div class="absolute inset-0 bg-green-500/10 group-hover:bg-transparent transition"></div>
-                <img src="https://avatars.githubusercontent.com/u/148762512" onerror="this.src='https://via.placeholder.com/400x400/000/0f0?text=EOZ'" alt="Juan Pablo Pedroche" class="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition duration-500">
+
+        <div class="md:col-span-5 flex justify-center">
+            <div class="relative w-64 h-64 md:w-80 md:h-80 group">
+                <!-- Marco decorativo de terminal -->
+                <div class="absolute -top-4 -left-4 w-8 h-8 border-t-2 border-l-2 border-green-500"></div>
+                <div class="absolute -bottom-4 -right-4 w-8 h-8 border-b-2 border-r-2 border-green-500"></div>
+                
+                <div class="w-full h-full border border-green-900 p-2 bg-black overflow-hidden relative">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-green-500/20 animate-pulse"></div>
+                    <img src="https://avatars.githubusercontent.com/u/148762512" 
+                         onerror="this.src='https://via.placeholder.com/400x400/000/0f0?text=PEDROCHE'" 
+                         alt="Juan Pablo" 
+                         class="w-full h-full object-cover grayscale brightness-75 group-hover:brightness-110 group-hover:grayscale-0 transition duration-700">
+                    <div class="absolute bottom-4 left-4 bg-black/80 p-2 border border-green-500/50">
+                        <p class="text-[10px] font-bold">ID: 33268665</p>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Proyectos -->
-    <section id="projects" class="py-20">
-        <div class="max-w-6xl mx-auto px-6">
-            <h2 class="text-2xl font-bold mb-12 flex items-center">
-                <span class="text-green-900 mr-2">01.</span> Repositorios_Públicos
-                <div class="h-px bg-green-900/50 flex-grow ml-4"></div>
-            </h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
-                <!-- Recon Automation -->
-                <a href="https://github.com/EoZipsec/recon-automation" target="_blank" class="card-bg p-6 rounded-lg block group">
-                    <div class="flex justify-between items-start mb-4">
-                        <i class="fa-solid fa-terminal text-2xl text-green-500"></i>
-                        <i class="fa-brands fa-github text-xl text-green-900 group-hover:text-green-500"></i>
-                    </div>
-                    <h3 class="text-white font-bold mb-2">recon-automation</h3>
-                    <p class="text-sm text-green-800 mb-4">Automatización de tareas de reconocimiento y enumeración mediante scripts de Shell.</p>
-                    <div class="flex gap-3 text-[10px] font-bold">
-                        <span class="text-gray-400">#Shell</span>
-                        <span class="text-green-400">#Recon</span>
-                        <span class="text-blue-400">#Security</span>
-                    </div>
-                </a>
-
-                <!-- Pentesting Notes -->
-                <a href="https://github.com/EoZipsec/pentesting-notes" target="_blank" class="card-bg p-6 rounded-lg block group">
-                    <div class="flex justify-between items-start mb-4">
-                        <i class="fa-solid fa-book-skull text-2xl text-green-500"></i>
-                        <i class="fa-brands fa-github text-xl text-green-900 group-hover:text-green-500"></i>
-                    </div>
-                    <h3 class="text-white font-bold mb-2">pentesting-notes</h3>
-                    <p class="text-sm text-green-800 mb-4">Metodologías, checklists y notas personales sobre auditorías de seguridad web.</p>
-                    <div class="flex gap-3 text-[10px] font-bold">
-                        <span class="text-white">#Markdown</span>
-                        <span class="text-yellow-400">#Methodology</span>
-                    </div>
-                </a>
+    <!-- Arsenal de Habilidades (Skills) -->
+    <section id="skills" class="py-20 px-6 max-w-6xl mx-auto">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="card-cyber p-6">
+                <i class="fa-solid fa-bug text-3xl mb-4 opacity-50"></i>
+                <h4 class="text-white text-xs font-bold mb-3 tracking-widest">OFFENSIVE</h4>
+                <ul class="text-[11px] space-y-2 text-green-700">
+                    <li>- Pentesting Web (OWASP)</li>
+                    <li>- SQL Injection / XSS</li>
+                    <li>- BurpSuite Proficient</li>
+                    <li>- Metasploit / Nmap</li>
+                </ul>
+            </div>
+            <div class="card-cyber p-6">
+                <i class="fa-solid fa-code text-3xl mb-4 opacity-50"></i>
+                <h4 class="text-white text-xs font-bold mb-3 tracking-widest">DEV_LANG</h4>
+                <ul class="text-[11px] space-y-2 text-green-700">
+                    <li>- Python (ITmaster Cert)</li>
+                    <li>- Bash Scripting</li>
+                    <li>- Go (Automation)</li>
+                    <li>- JavaScript / HTML / CSS</li>
+                </ul>
+            </div>
+            <div class="card-cyber p-6">
+                <i class="fa-solid fa-network-wired text-3xl mb-4 opacity-50"></i>
+                <h4 class="text-white text-xs font-bold mb-3 tracking-widest">INFRAESTRUCTURA</h4>
+                <ul class="text-[11px] space-y-2 text-green-700">
+                    <li>- Linux/Windows Admin</li>
+                    <li>- Redes Informáticas</li>
+                    <li>- Wireshark / TCP-IP</li>
+                    <li>- Domótica & CCTV</li>
+                </ul>
+            </div>
+            <div class="card-cyber p-6">
+                <i class="fa-solid fa-microchip text-3xl mb-4 opacity-50"></i>
+                <h4 class="text-white text-xs font-bold mb-3 tracking-widest">EXPERIENCIA</h4>
+                <ul class="text-[11px] space-y-2 text-green-700">
+                    <li>- Smartec (Área Técnica)</li>
+                    <li>- Lab Manager HTB</li>
+                    <li>- Auditor de Campo</li>
+                    <li>- Inglés Intermedio</li>
+                </ul>
             </div>
         </div>
     </section>
 
-    <!-- Insignias HTB -->
-    <section id="badges" class="py-20 bg-[#050505]">
-        <div class="max-w-6xl mx-auto px-6">
-            <h2 class="text-2xl font-bold mb-12 flex items-center">
-                <span class="text-green-900 mr-2">02.</span> HTB_Academy_Certifications
-                <div class="h-px bg-green-900/50 flex-grow ml-4"></div>
-            </h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <div class="card-bg p-4 rounded text-center flex flex-col items-center justify-center min-h-[160px]">
-                    <img src="https://academy.hackthebox.com/storage/badges/e992aef6-760c-11ee-b5a6-bea50ffe6cb4.png" class="w-16 mb-2" alt="Introduction to Cybersecurity">
-                    <span class="text-[9px] uppercase font-bold text-white leading-tight">Intro to Cyber</span>
-                </div>
-                <div class="card-bg p-4 rounded text-center flex flex-col items-center justify-center min-h-[160px]">
-                    <img src="https://academy.hackthebox.com/storage/badges/773db342-7b63-11ee-b5a6-bea50ffe6cb4.png" class="w-16 mb-2" alt="Web Requests">
-                    <span class="text-[9px] uppercase font-bold text-white leading-tight">Web Requests</span>
-                </div>
-                <div class="card-bg p-4 rounded text-center flex flex-col items-center justify-center min-h-[160px]">
-                    <img src="https://academy.hackthebox.com/storage/badges/132276eb-80f3-11ee-b5a6-bea50ffe6cb4.png" class="w-16 mb-2" alt="Web Proxies">
-                    <span class="text-[9px] uppercase font-bold text-white leading-tight">Web Proxies</span>
-                </div>
-                <div class="card-bg p-4 rounded text-center flex flex-col items-center justify-center min-h-[160px]">
-                    <img src="https://academy.hackthebox.com/storage/badges/995ab667-784b-11ee-b5a6-bea50ffe6cb4.png" class="w-16 mb-2" alt="JavaScript Intro">
-                    <span class="text-[9px] uppercase font-bold text-white leading-tight">JavaScript Intro</span>
-                </div>
-                <div class="card-bg p-4 rounded text-center flex flex-col items-center justify-center min-h-[160px]">
-                    <img src="https://academy.hackthebox.com/storage/badges/7010bcc7-3c2f-11ef-b18d-bea50ffe6cb4.png" class="w-16 mb-2" alt="Attacking Web Apps">
-                    <span class="text-[9px] uppercase font-bold text-white leading-tight">Attacking Web</span>
-                </div>
-                <div class="card-bg p-4 rounded text-center flex flex-col items-center justify-center min-h-[160px]">
-                    <img src="https://academy.hackthebox.com/storage/badges/dc93bae8-40c3-11ef-b18d-bea50ffe6cb4.png" class="w-16 mb-2" alt="Bash Scripting">
-                    <span class="text-[9px] uppercase font-bold text-white leading-tight">Bash Scripting</span>
+    <!-- Experiencia Profesional & Formación -->
+    <section id="exp" class="py-20 px-6 max-w-6xl mx-auto">
+        <h2 class="text-2xl font-bold mb-12 flex items-center gap-4">
+            <span class="text-green-900">[02]</span> HISTORIAL_DE_SISTEMA 
+            <div class="h-[1px] bg-green-900 flex-grow"></div>
+        </h2>
+        
+        <div class="space-y-12">
+            <!-- Smartec -->
+            <div class="grid md:grid-cols-4 gap-4 border-l-2 border-green-900 pl-8 relative">
+                <div class="absolute w-4 h-4 bg-green-500 rounded-full -left-[9px] top-0 shadow-[0_0_10px_#00ff41]"></div>
+                <div class="md:col-span-1 text-sm font-bold text-green-900">2022 - 2023</div>
+                <div class="md:col-span-3">
+                    <h3 class="text-xl text-white font-bold mb-2">Smartec Seguridad y Domótica</h3>
+                    <p class="text-sm text-green-600 font-bold mb-3 uppercase tracking-tighter">Responsable del Área Técnica</p>
+                    <p class="text-sm text-green-800 leading-relaxed">
+                        Liderazgo técnico en implementación de sistemas de seguridad electrónica, CCTV y redes inteligentes. Configuración avanzada de dispositivos y gestión de vulnerabilidades físicas.
+                    </p>
                 </div>
             </div>
-            <div class="mt-8 flex justify-center">
-                <a href="https://academy.hackthebox.com/u/EoZipsec" target="_blank" class="text-xs text-green-500 hover:underline">
-                    Ver perfil completo de HTB Academy <i class="fa-solid fa-external-link ml-1"></i>
-                </a>
-            </div>
-        </div>
-    </section>
 
-    <!-- Arsenal Técnico -->
-    <section id="skills" class="py-20">
-        <div class="max-w-6xl mx-auto px-6">
-            <h2 class="text-2xl font-bold mb-12 flex items-center">
-                <span class="text-green-900 mr-2">03.</span> Arsenal_Técnico
-                <div class="h-px bg-green-900/50 flex-grow ml-4"></div>
-            </h2>
-            <div class="grid md:grid-cols-4 gap-4 text-center">
-                <div class="card-bg p-6 rounded border-b-2 border-green-600">
-                    <h4 class="text-white text-xs font-bold mb-2">LENGUAJES</h4>
-                    <p class="text-green-700 text-sm">Go, Python, Bash, JS</p>
-                </div>
-                <div class="card-bg p-6 rounded border-b-2 border-green-600">
-                    <h4 class="text-white text-xs font-bold mb-2">TOOLS</h4>
-                    <p class="text-green-700 text-sm">BurpSuite, Nmap, Caido</p>
-                </div>
-                <div class="card-bg p-6 rounded border-b-2 border-green-600">
-                    <h4 class="text-white text-xs font-bold mb-2">INFRA</h4>
-                    <p class="text-green-700 text-sm">Linux, TCP/IP, Domótica</p>
-                </div>
-                <div class="card-bg p-6 rounded border-b-2 border-green-600">
-                    <h4 class="text-white text-xs font-bold mb-2">S.O.</h4>
-                    <p class="text-green-700 text-sm">Kali, Parrot, Windows</p>
+            <!-- ITmaster / Formación -->
+            <div class="grid md:grid-cols-4 gap-4 border-l-2 border-green-900 pl-8 relative">
+                <div class="absolute w-4 h-4 bg-green-900 rounded-full -left-[9px] top-0"></div>
+                <div class="md:col-span-1 text-sm font-bold text-green-900">CURSOS / CERT</div>
+                <div class="md:col-span-3">
+                    <h3 class="text-xl text-white font-bold mb-2">Formación Académica</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="card-bg p-3 border border-green-900">
+                            <p class="text-xs font-bold text-green-500">ITmaster</p>
+                            <p class="text-sm text-white">Programación Python (Certificado)</p>
+                        </div>
+                        <div class="card-bg p-3 border border-green-900">
+                            <p class="text-xs font-bold text-green-500">Inst. San José</p>
+                            <p class="text-sm text-white">Bachiller en Ciencias Exactas</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-20 border-t border-green-900/30">
-        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div class="text-center md:text-left">
-                <h3 class="text-white font-bold mb-2">EOZ_IPSEC Auditoría & Desarrollo</h3>
-                <p class="text-xs text-green-900">Gral. Juan Madariaga, Buenos Aires, Argentina</p>
+    <!-- Certificaciones HTB -->
+    <section id="badges" class="py-20 bg-black/50 px-6 border-y border-green-900/30">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-2xl font-bold mb-12 flex items-center gap-4">
+                <span class="text-green-900">[04]</span> LOGROS_HACK_THE_BOX 
+                <div class="h-[1px] bg-green-900 flex-grow"></div>
+            </h2>
+            <div class="badge-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                <!-- Los 6 Badges principales -->
+                <div class="card-cyber p-4 text-center">
+                    <img src="https://academy.hackthebox.com/storage/badges/e992aef6-760c-11ee-b5a6-bea50ffe6cb4.png" class="w-20 mx-auto mb-3" alt="Intro Cyber">
+                    <p class="text-[9px] font-bold text-white uppercase">Introduction to Cybersecurity</p>
+                </div>
+                <div class="card-cyber p-4 text-center">
+                    <img src="https://academy.hackthebox.com/storage/badges/773db342-7b63-11ee-b5a6-bea50ffe6cb4.png" class="w-20 mx-auto mb-3" alt="Web Requests">
+                    <p class="text-[9px] font-bold text-white uppercase">Web Requests</p>
+                </div>
+                <div class="card-cyber p-4 text-center">
+                    <img src="https://academy.hackthebox.com/storage/badges/132276eb-80f3-11ee-b5a6-bea50ffe6cb4.png" class="w-20 mx-auto mb-3" alt="Web Proxies">
+                    <p class="text-[9px] font-bold text-white uppercase">Web Proxies</p>
+                </div>
+                <div class="card-cyber p-4 text-center">
+                    <img src="https://academy.hackthebox.com/storage/badges/7010bcc7-3c2f-11ef-b18d-bea50ffe6cb4.png" class="w-20 mx-auto mb-3" alt="Attacking Web">
+                    <p class="text-[9px] font-bold text-white uppercase">Attacking Web Apps</p>
+                </div>
+                <div class="card-cyber p-4 text-center">
+                    <img src="https://academy.hackthebox.com/storage/badges/995ab667-784b-11ee-b5a6-bea50ffe6cb4.png" class="w-20 mx-auto mb-3" alt="JS Intro">
+                    <p class="text-[9px] font-bold text-white uppercase">JavaScript Intro</p>
+                </div>
+                <div class="card-cyber p-4 text-center">
+                    <img src="https://academy.hackthebox.com/storage/badges/dc93bae8-40c3-11ef-b18d-bea50ffe6cb4.png" class="w-20 mx-auto mb-3" alt="Bash">
+                    <p class="text-[9px] font-bold text-white uppercase">Bash Scripting</p>
+                </div>
             </div>
-            <div class="flex gap-6">
-                <a href="https://linkedin.com/in/eozipsec" target="_blank" class="text-green-700 hover:text-green-400 transition text-2xl"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="https://github.com/EoZipsec" target="_blank" class="text-green-700 hover:text-green-400 transition text-2xl"><i class="fa-brands fa-github"></i></a>
-                <button onclick="copyToClipboard('eoz.ipsec@gmail.com', 'Email')" class="text-green-700 hover:text-green-400 transition text-2xl"><i class="fa-solid fa-envelope"></i></button>
+            <div class="mt-12 text-center">
+                <a href="https://academy.hackthebox.com/u/EoZipsec" target="_blank" class="text-xs border border-green-500/30 px-6 py-2 hover:bg-green-500/10 transition">
+                    VER_PERFIL_ACADEMY_HTB_FULL <i class="fa-solid fa-arrow-right ml-2"></i>
+                </a>
             </div>
         </div>
-        <p class="text-center text-[8px] text-green-950 mt-12 tracking-widest">
-            TERMINAL SESSION EXPIRE: 2025-12-31 | SECURITY_LEVEL: HIGH
-        </p>
+    </section>
+
+    <!-- Footer Estilo Terminal -->
+    <footer class="py-16 px-6 border-t border-green-900 bg-black">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-12 mb-12">
+                <div>
+                    <h4 class="text-white font-bold mb-4 text-sm tracking-widest">// LOCALIZACIÓN</h4>
+                    <p class="text-xs text-green-700">General Juan Madariaga, Buenos Aires Province, Argentina.</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 text-sm tracking-widest">// COMUNICACIÓN</h4>
+                    <p class="text-xs text-green-700 cursor-pointer hover:text-green-400" onclick="copyToClipboard('eoz.ipsec@gmail.com', 'Email')">eoz.ipsec@gmail.com</p>
+                    <p class="text-xs text-green-700 mt-2">(2267)-664081</p>
+                </div>
+                <div class="flex gap-6 justify-center md:justify-end items-center">
+                    <a href="https://www.linkedin.com/in/eoz-pedroche-113310323" target="_blank" class="text-3xl text-green-800 hover:text-green-400 hover:scale-110 transition"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="https://github.com/EoZipsec" target="_blank" class="text-3xl text-green-800 hover:text-green-400 hover:scale-110 transition"><i class="fa-brands fa-github"></i></a>
+                </div>
+            </div>
+            <div class="text-[8px] text-green-950 font-bold border-t border-green-950 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <span>© 2026 JUAN PABLO PEDROCHE | ALL RIGHTS RESERVED</span>
+                <span class="animate-pulse">LATENCY: 14ms | ENCRYPTION: AES-256 | STATUS: ONLINE</span>
+            </div>
+        </div>
     </footer>
 
     <script>
         function copyToClipboard(text, type) {
-            navigator.clipboard.writeText(text).then(() => {
-                const toast = document.getElementById('toast');
-                toast.innerText = `${type} copiado: ${text}`;
-                toast.style.display = 'block';
-                
-                setTimeout(() => {
-                    toast.style.display = 'none';
-                }, 2500);
-            }).catch(err => {
-                console.error('Error al copiar: ', err);
-            });
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            const toast = document.getElementById('toast');
+            toast.innerText = `[SUCCESS] ${type.toUpperCase()}_COPIED`;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
         }
     </script>
 </body>
