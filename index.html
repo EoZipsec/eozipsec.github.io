@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -38,6 +38,7 @@
             background: rgba(0, 255, 65, 0.1);
             position: absolute;
             animation: scanline 6s linear infinite;
+            pointer-events: none;
         }
 
         @keyframes scanline {
@@ -67,10 +68,25 @@
         ::-webkit-scrollbar-thumb {
             background: #00ff41;
         }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #00ff41;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 0 15px rgba(0,255,65,0.4);
+        }
     </style>
 </head>
 <body class="relative overflow-x-hidden">
     <div class="scanline"></div>
+    <div id="toast" class="toast">Copiado al portapapeles</div>
 
     <!-- Navegación -->
     <nav class="p-6 border-b border-green-900/30 bg-black/50 backdrop-blur-md sticky top-0 z-50">
@@ -99,12 +115,16 @@
                 <span class="cursor"></span>
             </p>
             <div class="flex flex-wrap gap-4">
-                <a href="mailto:eoz.ipsec@gmail.com" class="bg-green-600 text-black px-6 py-3 font-bold rounded hover:bg-green-400 transition flex items-center gap-2">
+                <!-- Botón Email con Copiar -->
+                <button onclick="copyToClipboard('eoz.ipsec@gmail.com', 'Email')" class="bg-green-600 text-black px-6 py-3 font-bold rounded hover:bg-green-400 transition flex items-center gap-2">
                     <i class="fa-solid fa-envelope"></i> Email( )
-                </a>
-                <a href="https://wa.me/5492267664081" target="_blank" class="border border-green-600 px-6 py-3 rounded hover:bg-green-600/10 transition flex items-center gap-2">
+                </button>
+                
+                <!-- Botón WhatsApp/Teléfono con Copiar -->
+                <button onclick="copyToClipboard('+5492267664081', 'Teléfono')" class="border border-green-600 px-6 py-3 rounded hover:bg-green-600/10 transition flex items-center gap-2">
                     <i class="fa-solid fa-phone"></i> +54 9 2267 664081
-                </a>
+                </button>
+
                 <a href="https://github.com/EoZipsec" target="_blank" class="border border-green-600 px-6 py-3 rounded hover:bg-green-600/10 transition flex items-center gap-2">
                     <i class="fa-brands fa-github"></i> Perfil_GitHub
                 </a>
@@ -113,12 +133,12 @@
         <div class="flex justify-center relative">
             <div class="w-64 h-64 md:w-80 md:h-80 border-2 border-green-500 rounded-lg p-2 relative overflow-hidden group">
                 <div class="absolute inset-0 bg-green-500/10 group-hover:bg-transparent transition"></div>
-                <img src="https://avatars.githubusercontent.com/u/EoZipsec" onerror="this.src='https://via.placeholder.com/400x400/000/0f0?text=EOZ'" alt="Juan Pablo Pedroche" class="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition duration-500">
+                <img src="https://avatars.githubusercontent.com/u/148762512" onerror="this.src='https://via.placeholder.com/400x400/000/0f0?text=EOZ'" alt="Juan Pablo Pedroche" class="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition duration-500">
             </div>
         </div>
     </header>
 
-    <!-- Proyectos / Repositorios Destacados -->
+    <!-- Proyectos -->
     <section id="projects" class="py-20">
         <div class="max-w-6xl mx-auto px-6">
             <h2 class="text-2xl font-bold mb-12 flex items-center">
@@ -154,39 +174,11 @@
                         <span class="text-yellow-400">#Methodology</span>
                     </div>
                 </a>
-
-                <!-- HTB Achievements -->
-                <a href="https://github.com/EoZipsec/htb-achievements" target="_blank" class="card-bg p-6 rounded-lg block group">
-                    <div class="flex justify-between items-start mb-4">
-                        <i class="fa-solid fa-trophy text-2xl text-green-500"></i>
-                        <i class="fa-brands fa-github text-xl text-green-900 group-hover:text-green-500"></i>
-                    </div>
-                    <h3 class="text-white font-bold mb-2">htb-achievements</h3>
-                    <p class="text-sm text-green-800 mb-4">Registro centralizado de progresos y certificaciones en HackTheBox Academy.</p>
-                    <div class="flex gap-3 text-[10px] font-bold">
-                        <span class="text-red-400">#HTB</span>
-                        <span class="text-green-400">#Training</span>
-                    </div>
-                </a>
-
-                <!-- Pentesting Labs -->
-                <a href="https://github.com/EoZipsec/pentesting-labs" target="_blank" class="card-bg p-6 rounded-lg block group">
-                    <div class="flex justify-between items-start mb-4">
-                        <i class="fa-solid fa-flask text-2xl text-green-500"></i>
-                        <i class="fa-brands fa-github text-xl text-green-900 group-hover:text-green-500"></i>
-                    </div>
-                    <h3 class="text-white font-bold mb-2">pentesting-labs</h3>
-                    <p class="text-sm text-green-800 mb-4">Entornos de laboratorio y resolución de máquinas para práctica de hacking ético.</p>
-                    <div class="flex gap-3 text-[10px] font-bold">
-                        <span class="text-orange-400">#Labs</span>
-                        <span class="text-purple-400">#Practice</span>
-                    </div>
-                </a>
             </div>
         </div>
     </section>
 
-    <!-- Insignias de HackTheBox Academy -->
+    <!-- Insignias HTB -->
     <section id="badges" class="py-20 bg-[#050505]">
         <div class="max-w-6xl mx-auto px-6">
             <h2 class="text-2xl font-bold mb-12 flex items-center">
@@ -227,7 +219,7 @@
         </div>
     </section>
 
-    <!-- Habilidades Técnicas -->
+    <!-- Arsenal Técnico -->
     <section id="skills" class="py-20">
         <div class="max-w-6xl mx-auto px-6">
             <h2 class="text-2xl font-bold mb-12 flex items-center">
@@ -263,10 +255,9 @@
                 <p class="text-xs text-green-900">Gral. Juan Madariaga, Buenos Aires, Argentina</p>
             </div>
             <div class="flex gap-6">
-                <a href="https://linkedin.com/in/tu-perfil-linkedin" class="text-green-700 hover:text-green-400 transition text-2xl"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="https://github.com/EoZipsec" class="text-green-700 hover:text-green-400 transition text-2xl"><i class="fa-brands fa-github"></i></a>
-                <a href="mailto:eoz.ipsec@gmail.com" class="text-green-700 hover:text-green-400 transition text-2xl"><i class="fa-solid fa-envelope"></i></a>
-                <a href="tel:+5492267664081" class="text-green-700 hover:text-green-400 transition text-2xl"><i class="fa-solid fa-phone"></i></a>
+                <a href="https://linkedin.com/in/eozipsec" target="_blank" class="text-green-700 hover:text-green-400 transition text-2xl"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="https://github.com/EoZipsec" target="_blank" class="text-green-700 hover:text-green-400 transition text-2xl"><i class="fa-brands fa-github"></i></a>
+                <button onclick="copyToClipboard('eoz.ipsec@gmail.com', 'Email')" class="text-green-700 hover:text-green-400 transition text-2xl"><i class="fa-solid fa-envelope"></i></button>
             </div>
         </div>
         <p class="text-center text-[8px] text-green-950 mt-12 tracking-widest">
@@ -274,5 +265,20 @@
         </p>
     </footer>
 
+    <script>
+        function copyToClipboard(text, type) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('toast');
+                toast.innerText = `${type} copiado: ${text}`;
+                toast.style.display = 'block';
+                
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 2500);
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+            });
+        }
+    </script>
 </body>
 </html>
