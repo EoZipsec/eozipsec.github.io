@@ -110,7 +110,6 @@
         <div class="flex justify-center relative">
             <div class="w-64 h-64 md:w-80 md:h-80 border-2 border-green-500 rounded-lg p-2 relative overflow-hidden group">
                 <div class="absolute inset-0 bg-green-500/10 group-hover:bg-transparent transition"></div>
-                <!-- Imagen representativa de tu CV -->
                 <img src="https://avatars.githubusercontent.com/u/EoZipsec" onerror="this.src='https://via.placeholder.com/400x400/000/0f0?text=EOZ'" alt="Juan Pablo Pedroche" class="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition duration-500">
             </div>
         </div>
@@ -120,36 +119,64 @@
     <section id="projects" class="py-20">
         <div class="max-w-6xl mx-auto px-6">
             <h2 class="text-2xl font-bold mb-12 flex items-center">
-                <span class="text-green-900 mr-2">01.</span> Repositorios_Destacados
+                <span class="text-green-900 mr-2">01.</span> Repositorios_Públicos
                 <div class="h-px bg-green-900/50 flex-grow ml-4"></div>
             </h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Proyecto 1: HTB Scraper -->
-                <a href="https://github.com/EoZipsec/htb-badge-scraper" target="_blank" class="card-bg p-6 rounded-lg block group">
+            <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+                <!-- Recon Automation -->
+                <a href="https://github.com/EoZipsec/recon-automation" target="_blank" class="card-bg p-6 rounded-lg block group">
                     <div class="flex justify-between items-start mb-4">
-                        <i class="fa-solid fa-folder-open text-2xl text-green-500"></i>
+                        <i class="fa-solid fa-terminal text-2xl text-green-500"></i>
                         <i class="fa-brands fa-github text-xl text-green-900 group-hover:text-green-500"></i>
                     </div>
-                    <h3 class="text-white font-bold mb-2">HTB-Academy-Scraper</h3>
-                    <p class="text-sm text-green-800 mb-4">Script en Go diseñado para extraer insignias y logros de HackTheBox Academy de forma automatizada.</p>
+                    <h3 class="text-white font-bold mb-2">recon-automation</h3>
+                    <p class="text-sm text-green-800 mb-4">Automatización de tareas de reconocimiento y enumeración mediante scripts de Shell.</p>
                     <div class="flex gap-3 text-[10px] font-bold">
-                        <span class="text-blue-400">#Golang</span>
-                        <span class="text-yellow-400">#Scraping</span>
-                        <span class="text-green-400">#Automation</span>
+                        <span class="text-gray-400">#Shell</span>
+                        <span class="text-green-400">#Recon</span>
+                        <span class="text-blue-400">#Security</span>
                     </div>
                 </a>
-                <!-- Proyecto 2: Toolkit -->
-                <a href="https://github.com/EoZipsec/pentesting-scripts" target="_blank" class="card-bg p-6 rounded-lg block group">
+
+                <!-- Pentesting Notes -->
+                <a href="https://github.com/EoZipsec/pentesting-notes" target="_blank" class="card-bg p-6 rounded-lg block group">
                     <div class="flex justify-between items-start mb-4">
-                        <i class="fa-solid fa-folder-open text-2xl text-green-500"></i>
+                        <i class="fa-solid fa-book-skull text-2xl text-green-500"></i>
                         <i class="fa-brands fa-github text-xl text-green-900 group-hover:text-green-500"></i>
                     </div>
-                    <h3 class="text-white font-bold mb-2">Security-Toolkit</h3>
-                    <p class="text-sm text-green-800 mb-4">Colección de herramientas propias en Python y Bash para reconocimiento y explotación de fallos web.</p>
+                    <h3 class="text-white font-bold mb-2">pentesting-notes</h3>
+                    <p class="text-sm text-green-800 mb-4">Metodologías, checklists y notas personales sobre auditorías de seguridad web.</p>
                     <div class="flex gap-3 text-[10px] font-bold">
-                        <span class="text-yellow-400">#Python</span>
-                        <span class="text-orange-400">#Bash</span>
-                        <span class="text-red-400">#Offensive</span>
+                        <span class="text-white">#Markdown</span>
+                        <span class="text-yellow-400">#Methodology</span>
+                    </div>
+                </a>
+
+                <!-- HTB Achievements -->
+                <a href="https://github.com/EoZipsec/htb-achievements" target="_blank" class="card-bg p-6 rounded-lg block group">
+                    <div class="flex justify-between items-start mb-4">
+                        <i class="fa-solid fa-trophy text-2xl text-green-500"></i>
+                        <i class="fa-brands fa-github text-xl text-green-900 group-hover:text-green-500"></i>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">htb-achievements</h3>
+                    <p class="text-sm text-green-800 mb-4">Registro centralizado de progresos y certificaciones en HackTheBox Academy.</p>
+                    <div class="flex gap-3 text-[10px] font-bold">
+                        <span class="text-red-400">#HTB</span>
+                        <span class="text-green-400">#Training</span>
+                    </div>
+                </a>
+
+                <!-- Pentesting Labs -->
+                <a href="https://github.com/EoZipsec/pentesting-labs" target="_blank" class="card-bg p-6 rounded-lg block group">
+                    <div class="flex justify-between items-start mb-4">
+                        <i class="fa-solid fa-flask text-2xl text-green-500"></i>
+                        <i class="fa-brands fa-github text-xl text-green-900 group-hover:text-green-500"></i>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">pentesting-labs</h3>
+                    <p class="text-sm text-green-800 mb-4">Entornos de laboratorio y resolución de máquinas para práctica de hacking ético.</p>
+                    <div class="flex gap-3 text-[10px] font-bold">
+                        <span class="text-orange-400">#Labs</span>
+                        <span class="text-purple-400">#Practice</span>
                     </div>
                 </a>
             </div>
@@ -164,7 +191,6 @@
                 <div class="h-px bg-green-900/50 flex-grow ml-4"></div>
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <!-- Generados a partir de los enlaces de tu CV -->
                 <div class="card-bg p-4 rounded text-center flex flex-col items-center justify-center min-h-[160px]">
                     <img src="https://academy.hackthebox.com/storage/badges/e992aef6-760c-11ee-b5a6-bea50ffe6cb4.png" class="w-16 mb-2" alt="Introduction to Cybersecurity">
                     <span class="text-[9px] uppercase font-bold text-white leading-tight">Intro to Cyber</span>
